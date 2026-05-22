@@ -1,0 +1,2737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akashi Zone v24 — Kedai Afeng</title>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f0e8;
+    --surface: #faf7f2;
+    --border: rgba(0,0,0,0.15);
+    --border-md: rgba(0,0,0,0.25);
+    --border-heavy: rgba(0,0,0,0.85);
+    --text: #111111;
+    --text-muted: #555;
+    --text-faint: #888;
+    --ink: #1a1208;
+    --rule: #111;
+
+    --entry-top: #d4c5b0;
+    --entry-mid: #b8ccd8;
+    --entry-bot: #b8d4c0;
+    --sl-color: #d4b0b0;
+
+    --fib-gold: #c8a830;
+    --fib-618: #9070b0;
+    --fib-65: #5090b0;
+
+    --accent: #1a1208;
+    --accent-red: #8b1a1a;
+    --accent-blue: #1a3a5c;
+    --accent-green: #1a4a2a;
+
+    --radius: 0px;
+    --radius-sm: 0px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    min-height: 100vh;
+    padding: 0;
+    background-image: 
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 27px,
+        rgba(0,0,0,0.025) 27px,
+        rgba(0,0,0,0.025) 28px
+      );
+  }
+
+  .noise-bg {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.6;
+  }
+
+  .page-wrap {
+    position: relative; z-index: 1;
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ─── HEADER — NYT MASTHEAD ─── */
+  .header {
+    text-align: center;
+    margin-bottom: 0;
+    padding: 20px 0 0;
+    border-bottom: none;
+  }
+  .header-ornament {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    border-top: 3px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 6px 0;
+  }
+  .header-title {
+    font-family: 'UnifrakturMaguntia', cursive;
+    font-size: 72px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    line-height: 1.0;
+    margin: 8px 0 4px;
+  }
+  .header-title span {
+    color: var(--ink);
+    font-style: normal;
+  }
+  .header-jp {
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    letter-spacing: 0.3em;
+    font-style: italic;
+  }
+  .header-rule-block {
+    border-top: 4px double var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin: 12px 0 0;
+    padding: 5px 0;
+  }
+  .header-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9.5px;
+    color: var(--text-muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .masthead-dateline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-top: 1px solid var(--border-md);
+    margin-top: 10px;
+    padding-top: 8px 0 16px;
+    padding: 6px 0 18px;
+  }
+
+  /* ─── SECTION RULE ─── */
+  .section-rule {
+    border: none;
+    border-top: 3px solid var(--rule);
+    margin: 0 0 20px;
+  }
+  .section-rule.thin {
+    border-top: 1px solid var(--rule);
+    margin: 16px 0;
+  }
+
+  /* ─── INPUT PANEL ─── */
+  .input-panel {
+    background: var(--surface);
+    border: 1px solid var(--border-md);
+    border-top: 3px solid var(--rule);
+    padding: 24px 28px;
+    margin-bottom: 24px;
+  }
+  .panel-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .input-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .input-row label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .input-row input {
+    background: #fff;
+    border: 1px solid var(--border-md);
+    border-radius: 0;
+    padding: 9px 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .input-row input:focus { border-color: var(--ink); border-width: 2px; }
+  .input-row input::placeholder { color: var(--text-faint); }
+
+  .ca-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+  .ca-row .input-row { flex: 1; }
+  .fetch-btn {
+    background: var(--ink);
+    color: #f5f0e8;
+    border: none;
+    padding: 9px 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+    height: 40px;
+  }
+  .fetch-btn:hover { background: #3a2a10; }
+  .fetch-btn:active { background: #000; }
+  .fetch-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .calc-btn {
+    width: 100%;
+    background: var(--ink);
+    color: #f5f0e8;
+    border: none;
+    padding: 13px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-top: 10px;
+  }
+  .calc-btn:hover { background: #3a2a10; }
+
+  .divider-label {
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin: 16px 0;
+    position: relative;
+  }
+  .divider-label::before, .divider-label::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: calc(50% - 60px);
+    height: 1px;
+    background: var(--border-md);
+  }
+  .divider-label::before { left: 0; }
+  .divider-label::after { right: 0; }
+
+  .status-msg {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 8px;
+    min-height: 24px;
+    letter-spacing: 0.05em;
+  }
+  .status-msg.error { color: var(--accent-red); }
+  .status-msg.success { color: var(--accent-green); }
+
+  /* ─── TOKEN STRIP ─── */
+  .token-strip {
+    background: var(--ink);
+    color: #f5f0e8;
+    border: none;
+    margin-bottom: 24px;
+    display: none;
+    flex-direction: column;
+  }
+  .token-strip.visible { display: flex; }
+  .token-strip-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 24px;
+  }
+  .token-strip-state {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 24px 12px;
+    border-top: 1px solid rgba(245,240,232,0.1);
+    background: rgba(0,0,0,0.15);
+  }
+  .state-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.4);
+    flex-shrink: 0;
+  }
+  .state-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border: 1px solid;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .state-badge.state-momentum   { border-color: #7dcfa0; color: #7dcfa0; }
+  .state-badge.state-chop       { border-color: rgba(245,240,232,0.35); color: rgba(245,240,232,0.6); }
+  .state-badge.state-distribution { border-color: #e07070; color: #e07070; }
+  .state-badge.state-capitulation { border-color: #e0a050; color: #e0a050; }
+  .state-badge.state-recovery   { border-color: #70b4e0; color: #70b4e0; }
+  .state-badge.state-pump       { border-color: #d4a0ff; color: #d4a0ff; }
+  .state-desc {
+    font-family: 'Source Serif 4', serif;
+    font-size: 11px;
+    color: rgba(245,240,232,0.5);
+    font-style: italic;
+    letter-spacing: 0.01em;
+  }
+
+  /* ─── TIER LABELS ─── */
+  .tier-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin: 0 0 12px;
+    padding-top: 4px;
+    border-top: 1px solid var(--border);
+  }
+  .tier-label--faint {
+    color: rgba(0,0,0,0.2);
+    border-top-color: rgba(0,0,0,0.08);
+    margin-top: 8px;
+  }
+  .token-name { font-family: 'Playfair Display', serif; font-size: 22px; color: #f5f0e8; }
+  .token-ticker { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: rgba(245,240,232,0.6); margin-left: 8px; letter-spacing: 0.1em; }
+  .token-stats { display: flex; gap: 24px; }
+  .token-stat { text-align: right; }
+  .token-stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; color: rgba(245,240,232,0.5); letter-spacing: 0.15em; text-transform: uppercase; }
+  .token-stat-val { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; margin-top: 2px; color: #f5f0e8; }
+  .token-stat-val.up { color: #7dcfa0; }
+  .token-stat-val.down { color: #e07070; }
+
+  /* ─── RESULTS ─── */
+  .results-wrap { display: none; }
+  .results-wrap.visible { display: block; }
+
+  /* ─── CHART ZONE ─── */
+  .chart-panel {
+    background: var(--surface);
+    border: 1px solid var(--border-md);
+    border-top: 3px solid var(--rule);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-md);
+    padding-bottom: 12px;
+  }
+  .chart-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-style: italic;
+    font-weight: 600;
+  }
+  .chart-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; color: var(--text-muted); margin-top: 4px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .zone-canvas-wrap {
+    position: relative;
+    width: 100%;
+    height: 480px;
+  }
+  #zoneCanvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+  }
+
+  .legend-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .legend-swatch {
+    width: 14px;
+    height: 10px;
+    flex-shrink: 0;
+  }
+  .legend-swatch.dashed {
+    background: none;
+    border-top: 2px dashed;
+  }
+
+  /* ZONE CARDS */
+  .zone-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-bottom: 24px;
+    border: 1px solid var(--border-md);
+    border-top: 3px solid var(--rule);
+  }
+  .zone-card {
+    background: var(--surface);
+    border-right: 1px solid var(--border-md);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .zone-card:last-child { border-right: none; }
+  .zone-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .zone-card.entry-top::before { background: var(--entry-top); }
+  .zone-card.entry-mid::before { background: var(--entry-mid); }
+  .zone-card.entry-bot::before { background: var(--entry-bot); }
+  .zone-card.sl-card::before { background: var(--sl-color); }
+
+  .zone-tag {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border: 1px solid;
+    margin-bottom: 12px;
+  }
+  .entry-top .zone-tag { border-color: #8a6a40; color: #6a4a20; background: var(--entry-top); }
+  .entry-mid .zone-tag { border-color: #406080; color: var(--accent-blue); background: var(--entry-mid); }
+  .entry-bot .zone-tag { border-color: #306040; color: var(--accent-green); background: var(--entry-bot); }
+  .sl-card .zone-tag { border-color: #803030; color: var(--accent-red); background: var(--sl-color); }
+
+  .zone-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-style: italic;
+    line-height: 1.1;
+  }
+  .zone-price-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9.5px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+  }
+  .zone-discount {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-faint);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .zone-discount span { font-weight: 500; color: var(--text-muted); }
+
+  /* FIB TABLE */
+  .fib-panel {
+    background: var(--surface);
+    border: 1px solid var(--border-md);
+    border-top: 3px solid var(--rule);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+  .fib-panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-md);
+  }
+  .fib-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .fib-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    text-align: left;
+    padding: 0 12px 8px 0;
+    border-bottom: 2px solid var(--rule);
+  }
+  .fib-table td {
+    padding: 9px 12px 9px 0;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .fib-table tr:last-child td { border-bottom: none; }
+  .fib-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .fib-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.05em; }
+  .fib-price { font-family: 'Playfair Display', serif; font-style: italic; font-size: 16px; }
+  .fib-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border: 1px solid var(--border-md);
+    color: var(--text-muted);
+    background: transparent;
+  }
+  .fib-tag.best { border-color: var(--accent-green); color: var(--accent-green); }
+
+  /* AKASHI SCORE */
+  .score-panel {
+    background: var(--surface);
+    border: 1px solid var(--border-md);
+    border-top: 3px solid var(--rule);
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    display: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .score-panel.visible { display: block; }
+  .score-panel-inner {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .score-circle-wrap {
+    flex-shrink: 0;
+    position: relative;
+    width: 110px;
+    height: 110px;
+  }
+  .score-circle-wrap canvas {
+    position: absolute;
+    top: 0; left: 0;
+  }
+  .score-number-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .score-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    line-height: 1;
+    font-style: italic;
+  }
+  .score-of {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    color: var(--text-faint);
+    letter-spacing: 0.15em;
+    margin-top: 2px;
+  }
+  .score-right { flex: 1; }
+  .score-verdict {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-style: italic;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .score-desc {
+    font-family: 'Source Serif 4', serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .score-synthesis {
+    margin: 10px 0 14px;
+    padding: 10px 14px;
+    border-left: 2px solid var(--border-md);
+    background: rgba(0,0,0,0.025);
+  }
+  .synth-line {
+    font-family: 'Source Serif 4', serif;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    padding: 2px 0;
+  }
+  .synth-line + .synth-line {
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+    padding-top: 6px;
+  }
+  .score-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .score-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .score-bar-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    width: 110px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+  .score-bar-track {
+    flex: 1;
+    height: 4px;
+    background: var(--border-md);
+    overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%;
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+  }
+  .score-bar-val {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+    width: 24px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .score-glow {
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0.07;
+    filter: blur(40px);
+  }
+
+  /* LIQUIDITY HEALTH */
+  .liq-panel {
+    background: var(--surface);
+    border: 1px solid var(--border-md);
+    border-top: 3px solid var(--rule);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: none;
+  }
+  .liq-panel.visible { display: block; }
+  .liq-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-md);
+  }
+  .liq-panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 600;
+  }
+  .liq-status-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border: 1px solid;
+    font-weight: 500;
+  }
+  .liq-status-badge.healthy { border-color: var(--accent-green); color: var(--accent-green); background: #eef6ee; }
+  .liq-status-badge.decent { border-color: #7a5a10; color: #7a5a10; background: #faf4e0; }
+  .liq-status-badge.danger { border-color: var(--accent-red); color: var(--accent-red); background: #fef0f0; }
+  .liq-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-bottom: 16px;
+    border: 1px solid var(--border-md);
+  }
+  .liq-metric {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 14px 16px;
+  }
+  .liq-metric:nth-child(3n) { border-right: none; }
+  .liq-metric:nth-child(n+4) { border-top: 1px solid var(--border); }
+  .liq-metric-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+  }
+  .liq-metric-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-style: italic;
+    line-height: 1.1;
+  }
+  .liq-metric-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+  .liq-metric-val.green { color: var(--accent-green); }
+  .liq-metric-val.yellow { color: #7a5a10; }
+  .liq-metric-val.red { color: var(--accent-red); }
+  .liq-pressure-bar {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    margin-bottom: 12px;
+  }
+  .liq-pressure-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .liq-pressure-track {
+    height: 6px;
+    background: #fde8e8;
+    overflow: hidden;
+  }
+  .liq-pressure-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+    transition: width 0.6s ease;
+  }
+  .liq-note {
+    font-family: 'Source Serif 4', serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    letter-spacing: 0.01em;
+    line-height: 1.7;
+  }
+  .liq-note .highlight { color: var(--text); font-weight: 600; }
+
+  /* WHY THIS ZONE MATTERS */
+  .why-panel {
+    background: var(--ink);
+    color: #f5f0e8;
+    border: none;
+    margin-bottom: 24px;
+    padding: 24px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .why-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--fib-gold), var(--fib-618), var(--fib-65));
+  }
+  .why-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(245,240,232,0.12);
+  }
+  .why-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-style: italic;
+    font-weight: 600;
+    color: #f5f0e8;
+    letter-spacing: 0.01em;
+  }
+  .why-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border: 1px solid;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .why-badge.dip-healthy    { border-color: #7dcfa0; color: #7dcfa0; }
+  .why-badge.dip-flush      { border-color: #e0c050; color: #e0c050; }
+  .why-badge.dip-dist       { border-color: #e07070; color: #e07070; }
+  .why-badge.dip-dead       { border-color: rgba(245,240,232,0.3); color: rgba(245,240,232,0.4); }
+  .why-badge.dip-unknown    { border-color: rgba(245,240,232,0.3); color: rgba(245,240,232,0.4); }
+  .why-body {
+    font-family: 'Source Serif 4', serif;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: rgba(245,240,232,0.82);
+    letter-spacing: 0.01em;
+  }
+  .why-body strong {
+    color: #f5f0e8;
+    font-weight: 600;
+  }
+  .why-body .why-sentence {
+    display: block;
+    padding: 3px 0;
+  }
+  .why-body .why-sentence::before {
+    content: '— ';
+    color: rgba(245,240,232,0.3);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+  }
+  .why-footer {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(245,240,232,0.1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .why-rr, .why-timing {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: rgba(245,240,232,0.5);
+    line-height: 1.6;
+  }
+  .why-rr span, .why-timing span {
+    display: block;
+    font-size: 14px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #f5f0e8;
+    margin-top: 3px;
+    letter-spacing: 0;
+  }
+
+  /* INVALIDATION PANEL */
+  .inv-panel {
+    background: var(--surface);
+    border: 1px solid var(--border-md);
+    border-top: 3px solid var(--accent-red);
+    padding: 22px 28px;
+    margin-bottom: 24px;
+    display: none;
+  }
+  .inv-panel.visible { display: block; }
+  .inv-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-md);
+  }
+  .inv-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-style: italic;
+    font-weight: 600;
+    color: var(--accent-red);
+  }
+  .inv-subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-top: 3px;
+  }
+  .inv-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--border-md);
+    margin-bottom: 16px;
+  }
+  .inv-condition {
+    padding: 14px 16px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .inv-condition:nth-child(2n) { border-right: none; }
+  .inv-condition:nth-last-child(-n+2) { border-bottom: none; }
+  .inv-condition:nth-last-child(1):nth-child(odd) {
+    border-right: none;
+    grid-column: 1 / -1;
+  }
+  .inv-cond-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+  }
+  .inv-cond-trigger {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .inv-cond-trigger.danger { color: var(--accent-red); }
+  .inv-cond-desc {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--text-faint);
+    line-height: 1.5;
+    letter-spacing: 0.03em;
+  }
+  .inv-priority-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+  .inv-priority-dot.critical { background: var(--accent-red); }
+  .inv-priority-dot.major    { background: #c87820; }
+  .inv-priority-dot.minor    { background: var(--text-faint); }
+  .inv-thesis {
+    background: #fdf8f0;
+    border: 1px solid var(--border-md);
+    border-left: 3px solid var(--accent-red);
+    padding: 12px 16px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 12px;
+    line-height: 1.75;
+    color: var(--text-muted);
+  }
+  .inv-thesis strong { color: var(--text); }
+
+  @media (max-width: 600px) {
+    .inv-grid { grid-template-columns: 1fr; }
+    .inv-condition { border-right: none !important; }
+    .inv-condition:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+    .inv-condition:last-child { border-bottom: none; }
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 3px double var(--rule);
+  }
+  .footer-jp {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+  .footer-note {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9.5px;
+    color: var(--text-faint);
+    margin-top: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 600px) {
+    .input-grid { grid-template-columns: 1fr; }
+    .zone-cards { grid-template-columns: 1fr; }
+    .zone-card { border-right: none; border-bottom: 1px solid var(--border-md); }
+    .liq-grid { grid-template-columns: 1fr 1fr; }
+    .header-title { font-size: 52px; }
+    .token-stats { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="noise-bg"></div>
+
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-ornament">明石ゾーン &nbsp;·&nbsp; KEDAI AFENG &nbsp;·&nbsp; Solana Analysis &nbsp;·&nbsp; v24</div>
+    <h1 class="header-title">Akashi Zone</h1>
+    <div class="header-jp">アカシ・ゾーン — Entry Zone Analysis</div>
+    <div class="header-rule-block">
+      <div class="header-sub">Solana Memecoin Entry Zone Calculator</div>
+    </div>
+    <div class="masthead-dateline">
+      <span>Kedai Afeng Publishing</span>
+      <span>DYOR · Not Financial Advice</span>
+      <span>Solana Network</span>
+    </div>
+  </header>
+
+  <!-- INPUT PANEL -->
+  <div class="input-panel">
+    <div class="panel-label">// Input Data</div>
+
+    <!-- CA FETCH -->
+    <div class="ca-row">
+      <div class="input-row">
+        <label>Contract Address (CA)</label>
+        <input type="text" id="caInput" placeholder="Paste Solana CA here..." />
+      </div>
+      <button class="fetch-btn" id="fetchBtn" onclick="fetchFromCA()">Fetch Data</button>
+    </div>
+    <div class="status-msg" id="statusMsg"></div>
+
+    <div class="divider-label">or input manually</div>
+
+    <!-- MANUAL INPUT -->
+    <div class="input-grid">
+      <div class="input-row">
+        <label>ATH Market Cap (USD)</label>
+        <input type="number" id="athInput" placeholder="e.g. 0.00850" step="any" />
+      </div>
+      <div class="input-row">
+        <label>Lower Low Market Cap (USD)</label>
+        <input type="number" id="lowInput" placeholder="e.g. 0.00120" step="any" />
+      </div>
+      <div class="input-row">
+        <label>Higher Low Market Cap (optional, USD)</label>
+        <input type="number" id="hlInput" placeholder="e.g. 0.00300" step="any" />
+      </div>
+      <div class="input-row">
+        <label>Current Market Cap (USD)</label>
+        <input type="number" id="currentInput" placeholder="e.g. 0.00420" step="any" />
+      </div>
+      <div class="input-row">
+        <label>Total Supply (untuk Market Cap)</label>
+        <input type="number" id="supplyInput" placeholder="e.g. 1000000000" step="any" />
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="calculate()">→ Calculate Akashi Zone</button>
+
+    <!-- ATH/Low auto-fill warning -->
+    <div id="athLowWarning" style="display:none;margin-top:12px;padding:10px 14px;background:#fffbe8;border:1px solid #c8a830;border-left:3px solid #c8a830;font-family:'IBM Plex Mono',monospace;font-size:10px;line-height:1.6;color:#7a5a10;letter-spacing:0.04em;"></div>
+  </div>
+
+  <!-- TOKEN STRIP -->
+  <div class="token-strip" id="tokenStrip">
+    <div class="token-strip-main">
+      <div class="token-strip-top">
+        <div>
+          <span class="token-name" id="tokenName">—</span>
+          <span class="token-ticker" id="tokenTicker"></span>
+        </div>
+        <div class="token-stats">
+          <div class="token-stat">
+            <div class="token-stat-label">Market Cap</div>
+            <div class="token-stat-val" id="tsCurrent">—</div>
+          </div>
+          <div class="token-stat">
+            <div class="token-stat-label">1h Change</div>
+            <div class="token-stat-val" id="tsChange1h">—</div>
+          </div>
+          <div class="token-stat">
+            <div class="token-stat-label">6h Change</div>
+            <div class="token-stat-val" id="tsChange6h">—</div>
+          </div>
+          <div class="token-stat">
+            <div class="token-stat-label">24h Change</div>
+            <div class="token-stat-val" id="tsChange">—</div>
+          </div>
+          <div class="token-stat">
+            <div class="token-stat-label">Volume 24h</div>
+            <div class="token-stat-val" id="tsVol">—</div>
+          </div>
+          <div class="token-stat">
+            <div class="token-stat-label">Market Cap</div>
+            <div class="token-stat-val" id="tsMcap">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="token-strip-state" id="tokenStateBar" style="display:none;">
+        <span class="state-label">Market State</span>
+        <span class="state-badge" id="stateBadge">—</span>
+        <span class="state-desc" id="stateDesc">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-wrap" id="resultsWrap">
+
+    <!-- AKASHI SCORE — TIER 1 PRIMARY -->
+    <div class="score-panel" id="scorePanel">
+      <div class="score-glow" id="scoreGlow"></div>
+      <div class="panel-label">// Akashi Score · Primary Signal</div>
+      <div class="score-panel-inner">
+        <div class="score-circle-wrap">
+          <canvas id="scoreArc" width="110" height="110"></canvas>
+          <div class="score-number-wrap">
+            <div class="score-number" id="scoreNumber">—</div>
+            <div class="score-of">/ 100</div>
+          </div>
+        </div>
+        <div class="score-right">
+          <div class="score-verdict" id="scoreVerdict">—</div>
+          <div class="score-desc" id="scoreDesc">—</div>
+          <div class="score-synthesis" id="scoreSynthesis" style="display:none;"></div>
+          <div class="score-bars" id="scoreBars"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase Alert Banner (v24) — shown when phase is extreme -->
+    <div id="phaseAlertBanner" style="display:none;margin-bottom:16px;padding:12px 20px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;line-height:1.7;border-left:4px solid;"></div>
+
+    <!-- ENTRY CARDS — TIER 1 ACTION -->
+    <div class="tier-label">// Entry Zones · Action</div>
+    <div class="zone-cards" id="zoneCards">
+      <div class="zone-card entry-top">
+        <div class="zone-tag">Conservative</div>
+        <div class="zone-price" id="entryTop">—</div>
+        <div class="zone-price-sub">Top of Box (–40% from ATH MCap)</div>
+        <div class="zone-discount" id="discTop">—</div>
+      </div>
+      <div class="zone-card entry-mid">
+        <div class="zone-tag">★ Optimal</div>
+        <div class="zone-price" id="entryMid">—</div>
+        <div class="zone-price-sub">Golden Zone Intersection MCap</div>
+        <div class="zone-discount" id="discMid">—</div>
+      </div>
+      <div class="zone-card entry-bot">
+        <div class="zone-tag">Deep Entry</div>
+        <div class="zone-price" id="entryBot">—</div>
+        <div class="zone-price-sub">Bottom of Box (–60% from ATH MCap)</div>
+        <div class="zone-discount" id="discBot">—</div>
+      </div>
+    </div>
+
+    <!-- STOP LOSS CARD -->
+    <div style="margin-bottom:24px;border:1px solid var(--border-md);border-top:3px solid var(--rule);">
+      <div class="zone-card sl-card" style="border-right:none;">
+        <div class="zone-tag">Stop Loss</div>
+        <div class="zone-price" id="slPrice">—</div>
+        <div class="zone-price-sub">–85% from ATH MCap post-migration</div>
+        <div class="zone-discount" id="slNote">—</div>
+      </div>
+    </div>
+
+    <!-- WHY THIS ZONE MATTERS — conviction layer -->
+    <div class="why-panel" id="whyPanel" style="display:none;">
+      <div class="why-header">
+        <div class="why-title">Why This Zone Matters</div>
+        <div class="why-badge" id="dipBadge">—</div>
+      </div>
+      <div class="why-body" id="whyBody">—</div>
+      <div class="why-footer" id="whyFooter" style="display:none;">
+        <div class="why-rr" id="whyRR">—</div>
+        <div class="why-timing" id="whyTiming">—</div>
+      </div>
+    </div>
+
+    <!-- WHAT INVALIDATES THIS SETUP — v24 -->
+    <div class="inv-panel" id="invPanel">
+      <div class="inv-header">
+        <div>
+          <div class="inv-title">What Invalidates This Setup</div>
+          <div class="inv-subtitle">Exit thesis · Monitor conditions · Kapan kamu salah</div>
+        </div>
+      </div>
+      <div class="inv-grid" id="invGrid"><!-- filled by JS --></div>
+      <div class="inv-thesis" id="invThesis"><!-- filled by JS --></div>
+    </div>
+
+    <!-- ZONE CHART — TIER 1 VISUAL -->
+    <div class="chart-panel">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Zone Visualization</div>
+          <div class="chart-subtitle">Entry box · Fibonacci levels · Stop loss</div>
+        </div>
+      </div>
+      <div class="zone-canvas-wrap">
+        <canvas id="zoneCanvas" aria-label="Akashi Zone chart showing entry levels and stop loss"></canvas>
+      </div>
+      <div class="legend-grid">
+        <div class="legend-item"><div class="legend-swatch" style="background:#d8c8f0;border:1px solid #a080d0;"></div> Entry Zone Box</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#c5dff0;border:1px solid #6aa0d0;"></div> Conservative Entry (top)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#b8e0cc;border:1px solid #5aa080;"></div> Optimal Entry (mid)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#d0ead0;border:1px solid #70b080;"></div> Deep Entry (bottom)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#f0d080;opacity:0.8;"></div> Fib Golden Zone (0.618–0.65)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:rgba(220,80,80,0.15);border:1px solid rgba(200,60,60,0.4);"></div> Stop Loss Zone</div>
+      </div>
+    </div>
+
+    <!-- LIQUIDITY HEALTH — TIER 2 DIAGNOSTIC -->
+    <div class="tier-label">// Diagnostics</div>
+    <div class="liq-panel" id="liqPanel">
+      <div class="liq-panel-header">
+        <div class="liq-panel-title">Liquidity Health</div>
+        <div class="liq-status-badge" id="liqBadge">—</div>
+      </div>
+      <div class="liq-grid" id="liqGrid"></div>
+      <div class="liq-pressure-bar" id="liqPressureBar" style="display:none;">
+        <div class="liq-pressure-label">
+          <span>Buy Pressure</span>
+          <span id="liqPressurePct">—</span>
+        </div>
+        <div class="liq-pressure-track">
+          <div class="liq-pressure-fill" id="liqPressureFill" style="width:50%"></div>
+        </div>
+      </div>
+      <div class="liq-note" id="liqNote"></div>
+    </div>
+
+    <!-- FIB TABLE — TIER 3 SUPPLEMENTAL -->
+    <div class="tier-label tier-label--faint">// Supplemental · Fibonacci Reference</div>
+    <div class="fib-panel">
+      <div class="fib-panel-title">Fibonacci Levels</div>
+      <table class="fib-table" id="fibTable">
+        <thead>
+          <tr>
+            <th>Level</th>
+            <th>Ratio</th>
+            <th>Market Cap</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody id="fibBody"></tbody>
+      </table>
+    </div>
+
+  </div><!-- end results -->
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-jp">明石ゾーン · 京田フェン</div>
+    <p class="footer-note">DYOR · Not financial advice · Akashi Zone by Kedai Afeng</p>
+  </footer>
+
+</div><!-- end page-wrap -->
+
+<script>
+let tokenData = null;
+let ohlcvData = null; // GeckoTerminal OHLCV candles
+
+// ─── GECKO TERMINAL OHLCV FETCH ──────────────────────────────────────────────
+async function fetchGeckoOHLCV(network, poolAddress) {
+  try {
+    // GeckoTerminal free API — 1h candles, last 24
+    const url = `https://api.geckoterminal.com/api/v2/networks/${network}/pools/${poolAddress}/ohlcv/hour?limit=24&aggregate=1`;
+    const res = await fetch(url, { headers: { 'Accept': 'application/json;version=20230302' } });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.data?.attributes?.ohlcv_list || null;
+  } catch {
+    return null;
+  }
+}
+
+// ─── DIP CLASSIFIER ──────────────────────────────────────────────────────────
+function classifyDip(pair, ohlcv) {
+  // Signals from DexScreener snapshot
+  const h1   = pair?.priceChange?.h1  ?? null;
+  const h6   = pair?.priceChange?.h6  ?? null;
+  const h24  = pair?.priceChange?.h24 ?? null;
+  const buys  = pair?.txns?.h24?.buys  || 0;
+  const sells = pair?.txns?.h24?.sells || 0;
+  const total = buys + sells;
+  const buyRatio = total > 0 ? buys / total : null;
+  const vol   = pair?.volume?.h24 || 0;
+  const mcap  = pair?.fdv || pair?.marketCap || 0;
+  const liq   = pair?.liquidity?.usd || 0;
+  const vtm   = mcap > 0 ? vol / mcap : 0;
+  const liqRatio = mcap > 0 ? liq / mcap : 0;
+
+  // Signals from OHLCV (if available)
+  let volumeTrend = null;    // 'declining' | 'stable' | 'spiking'
+  let priceTrend  = null;    // 'lower_lows' | 'stabilizing' | 'recovering'
+  let sellerExhaustion = false;
+
+  if (ohlcv && ohlcv.length >= 6) {
+    // ohlcv: [timestamp, open, high, low, close, volume]
+    const recent = ohlcv.slice(-6);
+    const older  = ohlcv.slice(-12, -6);
+
+    const recentVol = recent.reduce((s, c) => s + c[5], 0) / 6;
+    const olderVol  = older.length > 0 ? older.reduce((s, c) => s + c[5], 0) / older.length : recentVol;
+
+    if (recentVol < olderVol * 0.55) volumeTrend = 'declining';
+    else if (recentVol > olderVol * 1.6) volumeTrend = 'spiking';
+    else volumeTrend = 'stable';
+
+    // Check lower lows vs stabilizing
+    const lows = recent.map(c => c[3]);
+    const highs = recent.map(c => c[2]);
+    const lowestRecent  = Math.min(...lows.slice(-3));
+    const lowestPrev    = Math.min(...lows.slice(0, 3));
+    const highestRecent = Math.max(...highs.slice(-3));
+    const highestPrev   = Math.max(...highs.slice(0, 3));
+
+    if (lowestRecent < lowestPrev * 0.97) priceTrend = 'lower_lows';
+    else if (highestRecent > highestPrev * 1.02 && lowestRecent >= lowestPrev * 0.99) priceTrend = 'recovering';
+    else priceTrend = 'stabilizing';
+
+    // Seller exhaustion: declining volume + price not making new lows
+    sellerExhaustion = volumeTrend === 'declining' && priceTrend !== 'lower_lows';
+  }
+
+  // ── Classifier logic ──
+  // Dead Zone: volume mati, liquidity kering
+  if (vtm < 0.01 && liqRatio < 0.03) {
+    return {
+      key: 'dead',
+      label: 'Dead Zone',
+      cssClass: 'dip-dead',
+      summary: 'Volume dan liquidity hampir tidak ada.',
+      detail: 'Tidak ada bid yang berarti. Token ini bisa bleeding pelan-pelan tanpa recovery. Avoid kecuali ada catalyst eksternal yang jelas.'
+    };
+  }
+
+  // Capitulation Flush: dump brutal + volume spike
+  if (h24 !== null && h24 < -45 && (volumeTrend === 'spiking' || vtm > 0.3) && buyRatio !== null && buyRatio < 0.4) {
+    return {
+      key: 'flush',
+      label: 'Capitulation Flush',
+      cssClass: 'dip-flush',
+      summary: 'Dump besar dengan volume tinggi — panic selling.',
+      detail: sellerExhaustion
+        ? 'Volume mulai decline setelah flush — seller exhaustion terdeteksi. Ini bisa jadi bottom yang actionable, tapi tunggu h1 konfirmasi dulu.'
+        : 'Sell pressure masih aktif. Jangan catch knife sekarang — tunggu volume compress dan h1 mulai positif.'
+    };
+  }
+
+  // Distribution: price gagal naik, seller dominan, volume masih ada
+  if (buyRatio !== null && buyRatio < 0.38 && vtm > 0.04 && (h6 === null || h6 < 0) && priceTrend !== 'recovering') {
+    return {
+      key: 'distribution',
+      label: 'Distribution',
+      cssClass: 'dip-dist',
+      summary: 'Seller aktif mendominasi dengan volume yang masih ada.',
+      detail: 'Ini bukan healthy dip — ini distribusi. Smart money kemungkinan sedang exit bertahap. Entry sekarang = exit liquidity mereka. Tunggu buyer ratio balik ke > 45% dulu.'
+    };
+  }
+
+  // Healthy Pullback: volume turun gradual, structure masih intact
+  if (
+    (volumeTrend === 'declining' || vtm < 0.2) &&
+    (buyRatio === null || buyRatio >= 0.42) &&
+    (h24 === null || h24 > -50) &&
+    priceTrend !== 'lower_lows' &&
+    liqRatio > 0.04
+  ) {
+    return {
+      key: 'healthy',
+      label: 'Healthy Pullback',
+      cssClass: 'dip-healthy',
+      summary: 'Koreksi organic — seller melemah, liquidity masih stabil.',
+      detail: sellerExhaustion
+        ? 'Volume seller exhausted dan harga mulai stabilize. Kondisi ini yang paling ideal untuk reload — probabilitas reversal lebih tinggi dari kebanyakan setup.'
+        : 'Tekanan jual berkurang secara gradual. Struktur masih intact. Monitor apakah volume terus turun — kalau iya, zona ini semakin menarik.'
+    };
+  }
+
+  // Default: tidak cukup data atau mixed signals
+  return {
+    key: 'unknown',
+    label: 'Mixed Signals',
+    cssClass: 'dip-unknown',
+    summary: 'Data tidak cukup untuk klasifikasi yang definitif.',
+    detail: 'Sinyal campuran — bisa healthy, bisa distribution. Gunakan manual input ATH/Low untuk konteks lebih lengkap.'
+  };
+}
+
+// ─── WHY THIS ZONE MATTERS v24 — Editorial Layer ────────────────────────────
+function generateWhyThisZone({ ath, low, hl, current, fib618, fib65, entryTop, entryBot, bestEntry, sl, pair, ohlcv, scoreData, phaseKey, phaseModifier }) {
+  const panel = document.getElementById('whyPanel');
+  const bodyEl = document.getElementById('whyBody');
+  const badgeEl = document.getElementById('dipBadge');
+  const footerEl = document.getElementById('whyFooter');
+  const rrEl = document.getElementById('whyRR');
+  const timingEl = document.getElementById('whyTiming');
+
+  panel.style.display = 'block';
+
+  // Dip classification
+  const dip = pair ? classifyDip(pair, ohlcv) : null;
+  if (dip) {
+    badgeEl.textContent = dip.label;
+    badgeEl.className = 'why-badge ' + dip.cssClass;
+  } else {
+    badgeEl.textContent = 'Manual Mode';
+    badgeEl.className = 'why-badge dip-unknown';
+  }
+
+  // ── Collect all candidate signals ──
+  // Each signal has: text, weight (higher = more important), condition
+  const signals = [];
+
+  // 1. PHASE SIGNAL — highest priority kalau ekstrem
+  if (phaseKey === 'pump') {
+    signals.push({ weight: 100, critical: true, text: '⚠️ <strong>Market sedang dalam fase vertical pump</strong> — ini adalah waktu paling berbahaya untuk entry. Probabilitas distribusi sangat tinggi. Zona fib tetap berlaku, tapi timing menjadi faktor dominan. Tunggu retracement terkonfirmasi dulu sebelum aktif.' });
+  } else if (phaseKey === 'distribution') {
+    signals.push({ weight: 90, critical: true, text: '⚠️ <strong>Distribution phase aktif</strong> — sell pressure mendominasi dengan volume yang masih ada. Ini bukan healthy dip, ini exit stage. Entry sekarang = jadi exit liquidity bagi yang sudah positioning lebih awal.' });
+  } else if (phaseKey === 'capitulation') {
+    signals.push({ weight: 80, critical: false, text: '<strong>Capitulation terdeteksi</strong> — dump besar dengan panic selling. Zone bisa jadi bottom yang actionable, tapi timing lebih penting dari level. Tunggu minimal 1-2 jam stabilisasi setelah volume spike sebelum eksekusi.' });
+  } else if (phaseKey === 'momentum') {
+    signals.push({ weight: 70, critical: false, text: '<strong>Momentum expansion aktif</strong> di multiple timeframe. Kondisi ini membuat conservative entry (–40% dari ATH) menjadi lebih viable — tidak perlu tunggu turun lebih dalam jika struktur tetap intact.' });
+  } else if (phaseKey === 'recovery') {
+    signals.push({ weight: 65, critical: false, text: '<strong>Recovery attempt terdeteksi</strong> — price action mulai reversal dari koreksi meski h24 masih negatif. Setup ini ideal untuk scale-in bertahap: masuk sebagian di zona ini, add sisanya kalau h6 confirm positif.' });
+  }
+
+  // 2. ZONE CONFLUENCE SIGNAL
+  if (current) {
+    const inGolden = current >= fib65 && current <= fib618;
+    const nearGolden = current >= fib65 * 0.93 && current <= fib618 * 1.07;
+    const inBox = current >= entryBot && current <= entryTop;
+    const aboveBox = current > entryTop;
+    const belowBox = current < entryBot;
+
+    if (inGolden) {
+      signals.push({ weight: 85, critical: false, text: 'Harga saat ini <strong>tepat di golden zone (fib 0.618–0.65)</strong> — ini adalah area absorpsi terkuat secara matematis. Zona di mana smart money cenderung mulai positioning ulang pada token yang memiliki struktur bullish intact.' });
+    } else if (nearGolden) {
+      signals.push({ weight: 60, critical: false, text: 'Harga <strong>mendekati golden zone</strong> (belum presisi, dalam radius 7%). Masih dalam range yang acceptable untuk mulai membangun posisi awal — tapi tunggu lebih dekat ke 0.618 untuk optimal sizing.' });
+    } else if (inBox && !aboveBox && !belowBox) {
+      signals.push({ weight: 45, critical: false, text: 'Harga dalam <strong>entry box (–40% hingga –60% dari ATH)</strong> — bukan di sweet spot golden zone, tapi struktur retracement masih sehat secara statistik untuk token yang akan recovery.' });
+    } else if (aboveBox) {
+      signals.push({ weight: 30, critical: true, text: 'Harga <strong>masih di atas entry box</strong> — belum sampai zona yang ideal. Setup ini informatif untuk watchlist, bukan untuk eksekusi sekarang.' });
+    } else if (belowBox) {
+      signals.push({ weight: 40, critical: false, text: 'Harga <strong>melampaui bottom entry box</strong> — territory yang lebih risky karena structure mungkin sudah broken. Kalau masuk, size lebih kecil dan ekspektasi volatilitas tinggi.' });
+    }
+  } else {
+    signals.push({ weight: 50, critical: false, text: `Optimal entry zone berada di antara <strong>fib 0.618 dan 0.65</strong> dari swing low ke ATH — confluence matematis yang paling signifikan untuk reload setelah pump besar.` });
+  }
+
+  // 3. STRUCTURE SIGNAL
+  if (hl && hl > low && hl < ath) {
+    const hlRatio = (hl - low) / (ath - low);
+    const hlFibClose = bestEntry && Math.abs(bestEntry - hl) / hl < 0.08;
+    if (hlRatio > 0.35 && hlFibClose) {
+      signals.push({ weight: 75, critical: false, text: '<strong>Double confluence kuat</strong>: higher low yang terbentuk di atas 35% dari range bertepatan dengan golden zone entry. Ini adalah kombinasi struktur paling reliable — buyer ada yang bertahan di level yang meaningful.' });
+    } else if (hlRatio > 0.35) {
+      signals.push({ weight: 65, critical: false, text: '<strong>Higher low yang kuat terbentuk</strong> — buyer bertahan di level yang secara signifikan lebih tinggi dari bottom sebelumnya. Struktur bullish intact. Ini adalah konfirmasi terpenting yang sering diabaikan.' });
+    } else if (hlRatio > 0.15) {
+      signals.push({ weight: 50, critical: false, text: 'Higher low terbentuk, tapi masih relatif tipis dari low. Structure ada, tapi belum sekuat yang ideal. Monitor apakah HL ini bertahan sebelum entry penuh.' });
+    }
+  } else if (current) {
+    signals.push({ weight: 55, critical: false, text: '<strong>Belum ada higher low yang terconfirm</strong> — ini adalah faktor risiko paling material dari setup ini. Entry tanpa HL validation artinya kamu masuk tanpa konfirmasi bahwa seller sudah exhausted.' });
+  }
+
+  // 4. DIP QUALITY SIGNAL
+  if (dip && dip.key !== 'unknown') {
+    const dipWeightMap = { healthy: 70, flush: 60, distribution: 80, dead: 85 };
+    signals.push({ weight: dipWeightMap[dip.key] || 55, critical: dip.key === 'dead' || dip.key === 'distribution', text: dip.detail });
+  }
+
+  // 5. LIQUIDITY SIGNAL
+  if (pair) {
+    const liq = pair.liquidity?.usd || 0;
+    const mcap = pair.fdv || pair.marketCap || 0;
+    const liqRatio = mcap > 0 ? liq / mcap : 0;
+    if (liqRatio > 0.12) {
+      signals.push({ weight: 55, critical: false, text: 'Liquidity pool <strong>sangat sehat</strong> — depth cukup untuk absorb tekanan besar dan eksekusi exit lebih mudah kalau setup invalidated.' });
+    } else if (liqRatio > 0.05) {
+      signals.push({ weight: 40, critical: false, text: 'Liquidity <strong>cukup tapi tidak ideal</strong> — workable untuk sizing yang reasonable, tapi pantau pool sebelum full position.' });
+    } else if (liqRatio > 0) {
+      signals.push({ weight: 70, critical: true, text: '⚠️ <strong>Liquidity sangat tipis</strong> — ini adalah faktor risiko terbesar dari setup ini. Slippage bisa signifikan dan token jauh lebih rentan terhadap manipulasi whale.' });
+    }
+  }
+
+  // ── Editorial selection: pilih maksimal 3 sinyal paling relevan ──
+  // Sort by weight descending, prioritize critical signals
+  signals.sort((a, b) => {
+    if (a.critical && !b.critical) return -1;
+    if (!a.critical && b.critical) return 1;
+    return b.weight - a.weight;
+  });
+
+  // Ambil top 3, tapi pastikan critical selalu masuk
+  const criticals = signals.filter(s => s.critical).slice(0, 2);
+  const nonCriticals = signals.filter(s => !s.critical).slice(0, 3 - criticals.length);
+  const selected = [...criticals, ...nonCriticals];
+
+  // Render
+  bodyEl.innerHTML = selected.map(s => `<span class="why-sentence">${s.text}</span>`).join('');
+
+  // Phase entry note sebagai override note (v24)
+  if (phaseModifier && phaseModifier.entryNote && (phaseKey === 'pump' || phaseKey === 'distribution' || phaseKey === 'capitulation')) {
+    bodyEl.innerHTML += `<span class="why-sentence" style="color:rgba(245,240,232,0.65);font-style:italic;">${phaseModifier.entryNote}</span>`;
+  }
+
+  // Asymmetric R/R footer
+  if (current && sl) {
+    const downside = ((current - sl) / current) * 100;
+    const upside = ((ath - current) / current) * 100;
+    const rr = upside / downside;
+    const downsideStr = downside.toFixed(0) + '%';
+    const upsideStr = upside.toFixed(0) + '%';
+    const rrStr = rr.toFixed(1) + 'x';
+    footerEl.style.display = 'grid';
+    rrEl.innerHTML = `Asymmetric R/R<span>${rrStr} ratio · ↓${downsideStr} vs ↑${upsideStr} ke ATH</span>`;
+    if (rr >= 4) {
+      timingEl.innerHTML = `Setup Conviction<span>R/R ${rrStr} — sangat asymmetric. Bahkan dengan winrate 30% sekalipun, ini positive expectancy.</span>`;
+    } else if (rr >= 2) {
+      timingEl.innerHTML = `Setup Conviction<span>R/R ${rrStr} — favorable. Manageable risk dengan upside yang meaningful.</span>`;
+    } else {
+      timingEl.innerHTML = `Setup Conviction<span>R/R ${rrStr} — kurang ideal. Harga mungkin terlalu jauh dari SL atau terlalu dekat ATH.</span>`;
+    }
+  } else {
+    footerEl.style.display = 'none';
+  }
+}
+
+
+function calcMarketState(pair) {
+  const h1  = pair.priceChange?.h1  ?? null;
+  const h6  = pair.priceChange?.h6  ?? null;
+  const h24 = pair.priceChange?.h24 ?? null;
+  const vol = pair.volume?.h24 || 0;
+  const mcap = pair.fdv || pair.marketCap || 0;
+  const liq = pair.liquidity?.usd || 0;
+  const buys = pair.txns?.h24?.buys || 0;
+  const sells = pair.txns?.h24?.sells || 0;
+  const totalTxns = buys + sells;
+  const buyRatio = totalTxns > 0 ? buys / totalTxns : 0.5;
+  const vtm = mcap > 0 ? vol / mcap : 0;
+  const liqRatio = mcap > 0 ? liq / mcap : 0;
+
+  // Pump: h1 atau h24 sangat ekstrem ke atas
+  if ((h1 !== null && h1 > 40) || (h24 !== null && h24 > 150)) {
+    return {
+      key: 'pump',
+      label: 'Vertical Pump',
+      cssClass: 'state-pump',
+      desc: 'Pergerakan parabolic — probabilitas distribusi tinggi, bukan zona entry.'
+    };
+  }
+
+  // Capitulation: dump besar + sell pressure dominan
+  if (h24 !== null && h24 < -55 && buyRatio < 0.4) {
+    return {
+      key: 'capitulation',
+      label: 'Capitulation',
+      cssClass: 'state-capitulation',
+      desc: 'Tekanan jual ekstrem — bisa jadi bottom, tapi konfirmasi balik dulu sebelum entry.'
+    };
+  }
+
+  // Distribution: h6 negatif, sell dominan, volume masih ada
+  if (h6 !== null && h6 < -10 && buyRatio < 0.42 && vtm > 0.05) {
+    return {
+      key: 'distribution',
+      label: 'Distribution',
+      cssClass: 'state-distribution',
+      desc: 'Penjual aktif mendominasi — struktur melemah, hati-hati trap entry.'
+    };
+  }
+
+  // Momentum Expansion: multi-TF positif + buy dominan + volume sehat
+  if (h1 !== null && h1 > 5 && h6 !== null && h6 > 8 && buyRatio > 0.55 && vtm > 0.1) {
+    return {
+      key: 'momentum',
+      label: 'Momentum Expansion',
+      cssClass: 'state-momentum',
+      desc: 'Multi-timeframe bullish dengan buy pressure aktif. Momentum masih berjalan.'
+    };
+  }
+
+  // Recovery: h24 negatif tapi h1/h6 mulai positif
+  if (h24 !== null && h24 < -15 && h6 !== null && h6 > 3 && h1 !== null && h1 > 0) {
+    return {
+      key: 'recovery',
+      label: 'Recovery Attempt',
+      cssClass: 'state-recovery',
+      desc: 'Mulai ada pembalikan jangka pendek dari koreksi — konfirmasi struktur masih diperlukan.'
+    };
+  }
+
+  // Default: chop / konsolidasi
+  return {
+    key: 'chop',
+    label: 'Consolidation',
+    cssClass: 'state-chop',
+    desc: 'Market dalam mode sideways — belum ada sinyal directional yang clear.'
+  };
+}
+
+function renderMarketState(pair) {
+  const state = calcMarketState(pair);
+  const bar = document.getElementById('tokenStateBar');
+  const badge = document.getElementById('stateBadge');
+  const desc = document.getElementById('stateDesc');
+
+  badge.textContent = state.label;
+  badge.className = 'state-badge ' + state.cssClass;
+  desc.textContent = state.desc;
+  bar.style.display = 'flex';
+}
+
+async function fetchFromCA() {
+  const ca = document.getElementById('caInput').value.trim();
+  if (!ca) { setStatus('Masukkan CA dulu ya!', 'error'); return; }
+
+  setStatus('Fetching data dari DexScreener...', '');
+  document.getElementById('fetchBtn').disabled = true;
+
+  try {
+    const url = `https://api.dexscreener.com/latest/dex/tokens/${ca}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Network error');
+    const data = await res.json();
+
+    if (!data.pairs || data.pairs.length === 0) {
+      throw new Error('Token tidak ditemukan di DexScreener');
+    }
+
+    // Sort by volume, take best pair
+    const pairs = data.pairs.sort((a, b) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0));
+    const pair = pairs[0];
+
+    const current = parseFloat(pair.priceUsd);
+    const h24High = pair.priceChange?.h24 !== undefined
+      ? current / (1 + pair.priceChange.h24 / 100)
+      : null;
+    const name = pair.baseToken?.name || 'Unknown';
+    const ticker = pair.baseToken?.symbol || '';
+    const change24 = pair.priceChange?.h24;
+    const vol24 = pair.volume?.h24;
+    const mcap = pair.fdv;
+
+    // Grab total supply from pair data
+    const totalSupply = pair.baseToken?.totalSupply || (mcap && current ? mcap / current : null);
+
+    // Show token strip
+    document.getElementById('tokenName').textContent = name;
+    document.getElementById('tokenTicker').textContent = `$${ticker}`;
+    document.getElementById('tsCurrent').textContent = formatLarge(mcap) || formatPrice(current);
+    const changeEl = document.getElementById('tsChange');
+    if (change24 !== undefined) {
+      changeEl.textContent = `${change24 >= 0 ? '+' : ''}${change24.toFixed(2)}%`;
+      changeEl.className = 'token-stat-val ' + (change24 >= 0 ? 'up' : 'down');
+    }
+
+    const change6h = pair.priceChange?.h6;
+    const change6El = document.getElementById('tsChange6h');
+    if (change6h !== undefined) {
+      change6El.textContent = `${change6h >= 0 ? '+' : ''}${change6h.toFixed(2)}%`;
+      change6El.className = 'token-stat-val ' + (change6h >= 0 ? 'up' : 'down');
+    }
+
+    const change1h = pair.priceChange?.h1;
+    const change1El = document.getElementById('tsChange1h');
+    if (change1h !== undefined) {
+      change1El.textContent = `${change1h >= 0 ? '+' : ''}${change1h.toFixed(2)}%`;
+      change1El.className = 'token-stat-val ' + (change1h >= 0 ? 'up' : 'down');
+    }
+    document.getElementById('tsVol').textContent = formatLarge(vol24);
+    document.getElementById('tsMcap').textContent = formatLarge(mcap);
+    document.getElementById('tokenStrip').classList.add('visible');
+
+    // Fill inputs
+    document.getElementById('currentInput').value = current;
+
+    // ATH & Low estimation — v24: more careful, with explicit user warning
+    // We only auto-fill if fields are empty, and we warn the user to verify
+    const athField = document.getElementById('athInput');
+    const lowField = document.getElementById('lowInput');
+    let autoFilledAth = false;
+    let autoFilledLow = false;
+
+    if (!athField.value) {
+      // Best estimate: use h24 price derived from % change
+      // If price pumped 200% in 24h, the "24h open" is approximately current / 3
+      // We take the MAX of current and h24 derived price as ATH estimate
+      let athEstimate = current;
+      if (h24High && h24High > current) athEstimate = h24High;
+      // Also check h6 and h1 for intraday high
+      const h6Change = pair.priceChange?.h6;
+      const h1Change = pair.priceChange?.h1;
+      if (h6Change !== undefined && h6Change > 0) {
+        const h6High = current / (1 + h6Change / 100) * (1 + Math.abs(h6Change) / 100);
+        athEstimate = Math.max(athEstimate, h6High);
+      }
+      athField.value = athEstimate.toPrecision(5);
+      autoFilledAth = true;
+    }
+    if (!lowField.value) {
+      // Conservative low estimate: assume current is somewhere above the real low
+      // Don't use the 0.5x hack — instead use a % below current based on h24 drawdown context
+      // If h24 is -40%, the 24h low is roughly current / 0.6; for low we assume deeper
+      const h24Change = pair.priceChange?.h24;
+      let lowEstimate;
+      if (h24Change !== undefined && h24Change < -20) {
+        // Token sudah dalam koreksi — low bisa lebih dalam
+        lowEstimate = current * 0.4;
+      } else if (h24Change !== undefined && h24Change > 50) {
+        // Token baru pump — low probably jauh di bawah
+        lowEstimate = current * 0.2;
+      } else {
+        lowEstimate = current * 0.35;
+      }
+      lowField.value = lowEstimate.toPrecision(4);
+      autoFilledLow = true;
+    }
+
+    if (autoFilledAth || autoFilledLow) {
+      // Show explicit warning that these are estimates
+      const warnEl = document.getElementById('athLowWarning');
+      if (warnEl) {
+        warnEl.style.display = 'block';
+        warnEl.innerHTML = `⚠️ <strong>ATH${autoFilledAth ? '' : ''} ${autoFilledLow ? '& Low' : ''} di-estimasi otomatis</strong> dari data 24h — bukan harga historis aktual. <strong>Wajib diverifikasi manual</strong> sebelum kamu percaya output di bawah. Cek chart token untuk ATH & Low yang sesungguhnya.`;
+      }
+    } else {
+      const warnEl = document.getElementById('athLowWarning');
+      if (warnEl) warnEl.style.display = 'none';
+    }
+
+    tokenData = pair;
+    // Fill supply input if we can derive it
+    if (totalSupply && !document.getElementById('supplyInput').value) {
+      document.getElementById('supplyInput').value = Math.round(totalSupply);
+    }
+
+    // Market State
+    renderMarketState(pair);
+
+    // GeckoTerminal OHLCV — parallel fetch
+    ohlcvData = null;
+    setStatus(`Data ${name} ($${ticker}) di-fetch! Mengambil OHLCV dari GeckoTerminal...`, 'success');
+    const network = pair.chainId || 'solana';
+    const poolAddr = pair.pairAddress;
+    if (poolAddr) {
+      fetchGeckoOHLCV(network, poolAddr).then(candles => {
+        if (candles && candles.length > 0) {
+          ohlcvData = candles;
+          setStatus(`Data ${name} ($${ticker}) lengkap — DexScreener + GeckoTerminal OHLCV (${candles.length} candles).`, 'success');
+        } else {
+          setStatus(`Data ${name} ($${ticker}) berhasil di-fetch! (GeckoTerminal OHLCV tidak tersedia — analisis tetap berjalan.)`, 'success');
+        }
+      });
+    } else {
+      setStatus(`Data ${name} ($${ticker}) berhasil di-fetch!`, 'success');
+    }
+  } catch (e) {
+    setStatus('Error: ' + e.message + '. Coba input manual ya.', 'error');
+  }
+  document.getElementById('fetchBtn').disabled = false;
+}
+
+function calculate() {
+  const ath = parseFloat(document.getElementById('athInput').value);
+  const low = parseFloat(document.getElementById('lowInput').value);
+  const hl = parseFloat(document.getElementById('hlInput').value) || null;
+  const current = parseFloat(document.getElementById('currentInput').value) || null;
+  const supply = parseFloat(document.getElementById('supplyInput').value) || null;
+
+  // Helper: convert price to mcap display if supply available, else show price
+  function toDisplay(price) {
+    if (supply && price) return formatLarge(price * supply);
+    return formatPrice(price);
+  }
+
+  if (!ath || !low || isNaN(ath) || isNaN(low)) {
+    setStatus('ATH dan Lower Low wajib diisi!', 'error');
+    return;
+  }
+  if (low >= ath) {
+    setStatus('Lower Low harus lebih kecil dari ATH!', 'error');
+    return;
+  }
+
+  setStatus('', '');
+
+  const range = ath - low;
+
+  // Entry zones: -40% to -60% from ATH
+  const entryTop = ath * 0.60;   // -40% from ATH
+  const entryBot = ath * 0.40;   // -60% from ATH
+
+  // Fibonacci from low → ATH
+  const fib618 = ath - (range * 0.618);
+  const fib65  = ath - (range * 0.65);
+  const fib786 = ath - (range * 0.786);
+  const fib5   = ath - (range * 0.5);
+  const fib382 = ath - (range * 0.382);
+  const fib236 = ath - (range * 0.236);
+
+  // Optimal entry = avg of fib 0.618 & 0.65 golden zone
+  const entryMid = (fib618 + fib65) / 2;
+
+  // Stop loss: -85% from ATH
+  const sl = ath * 0.15;
+
+  // Fibonacci from HL → ATH (if HL provided)
+  let hlFib618 = null, hlFib65 = null, hlEntryMid = null;
+  if (hl && hl > low && hl < ath) {
+    const hlRange = ath - hl;
+    hlFib618 = ath - hlRange * 0.618;
+    hlFib65  = ath - hlRange * 0.65;
+    hlEntryMid = (hlFib618 + hlFib65) / 2;
+  }
+
+  // Best entry = if HL fib golden zone intersects main box → prefer that
+  const bestEntry = hlEntryMid
+    ? (hlEntryMid >= entryBot && hlEntryMid <= entryTop ? hlEntryMid : entryMid)
+    : entryMid;
+
+  // Update cards
+  document.getElementById('entryTop').textContent = toDisplay(entryTop);
+  document.getElementById('discTop').innerHTML = `<span>${pctFrom(entryTop, ath)}%</span> dari ATH`;
+  document.getElementById('entryMid').textContent = toDisplay(bestEntry);
+  document.getElementById('discMid').innerHTML = `<span>${pctFrom(bestEntry, ath)}%</span> dari ATH · Fib Golden Zone`;
+  document.getElementById('entryBot').textContent = toDisplay(entryBot);
+  document.getElementById('discBot').innerHTML = `<span>${pctFrom(entryBot, ath)}%</span> dari ATH`;
+  document.getElementById('slPrice').textContent = toDisplay(sl);
+  document.getElementById('slNote').innerHTML = `<span>–85%</span> dari ATH · Batas risiko maksimal`;
+
+  // ── Phase-aware entry modifier (v24) ──
+  // Market phase dari tokenData (kalau ada) bisa shift recommendation
+  let phaseKey = null;
+  let phaseModifier = { entryBias: 'normal', sizingNote: null, entryNote: null };
+  if (tokenData) {
+    const state = calcMarketState(tokenData);
+    phaseKey = state.key;
+    switch (state.key) {
+      case 'pump':
+        phaseModifier = {
+          entryBias: 'avoid',
+          sizingNote: 'Vertical pump aktif — ini zona distribusi, bukan entry.',
+          entryNote: 'HINDARI entry saat ini. Tunggu retracement minimum 40% dari high sebelum pertimbangkan posisi.'
+        };
+        break;
+      case 'distribution':
+        phaseModifier = {
+          entryBias: 'reduce',
+          sizingNote: 'Distribution phase — scale kecil, maks 25% dari rencana posisi.',
+          entryNote: 'Gunakan entry bot saja jika memaksa masuk. Conservative entry jadi terlalu high-risk di fase ini.'
+        };
+        break;
+      case 'capitulation':
+        phaseModifier = {
+          entryBias: 'wait',
+          sizingNote: 'Capitulation — tunggu h1 positif dulu sebagai konfirmasi.',
+          entryNote: 'Zone menarik tapi timing belum aman. Entry prematur di kapitulasi sering menghasilkan drawdown lebih dalam.'
+        };
+        break;
+      case 'recovery':
+        phaseModifier = {
+          entryBias: 'scale',
+          sizingNote: 'Recovery attempt terdeteksi — ideal untuk scale-in bertahap.',
+          entryNote: 'Mulai dari 30-40% posisi di optimal entry, add kalau h6 konfirmasi positif.'
+        };
+        break;
+      case 'momentum':
+        phaseModifier = {
+          entryBias: 'aggressive',
+          sizingNote: 'Momentum aktif — bisa lebih aggressive di conservative entry.',
+          entryNote: 'Momentum multi-TF bagus. Conservative entry (top box) jadi lebih viable dari biasanya.'
+        };
+        break;
+      default: // chop
+        phaseModifier = {
+          entryBias: 'normal',
+          sizingNote: 'Market konsolidasi — standard sizing, fokus ke optimal entry.',
+          entryNote: null
+        };
+    }
+  }
+
+  // Render phase alert banner
+  const bannerEl = document.getElementById('phaseAlertBanner');
+  if (bannerEl && phaseKey && phaseModifier.entryBias !== 'normal') {
+    const bannerStyles = {
+      pump:         { bg: '#fff0f0', border: '#c0404040', color: '#8b1a1a', text: `🚨 VERTICAL PUMP AKTIF — Entry zones di bawah berlaku secara teknikal, tapi <strong>timing sangat buruk</strong>. Market sedang dalam mode distribusi. Prioritaskan watchlist, bukan eksekusi.` },
+      distribution: { bg: '#fff4f0', border: '#c06040', color: '#7a3010', text: `⚠️ DISTRIBUTION PHASE — Zona entry tersedia, tapi <strong>sell pressure masih dominan</strong>. Gunakan entry bot dengan size maksimal 25% dari rencana posisi jika memaksa masuk.` },
+      capitulation:  { bg: '#fffbe8', border: '#c8a830', color: '#7a5a10', text: `⏳ CAPITULATION — Zona ini potensial tapi <strong>belum waktunya</strong>. Tunggu stabilisasi price action minimal 1-2 jam setelah volume spike sebelum eksekusi.` },
+      recovery:      { bg: '#f0faf4', border: '#2e8a50', color: '#1a4a2a', text: `✓ RECOVERY ATTEMPT — Kondisi favorable untuk <strong>scale-in bertahap</strong>. Mulai dari 30-40% posisi di optimal entry, tambah kalau h6 confirm.` },
+      momentum:      { bg: '#f0f4fa', border: '#2e5a8a', color: '#1a3a5c', text: `✓ MOMENTUM EXPANSION — Market dalam mode ekspansi. <strong>Conservative entry lebih viable</strong> dari biasanya — tidak perlu tunggu turun lebih dalam.` },
+    };
+    const style = bannerStyles[phaseKey];
+    if (style) {
+      bannerEl.style.display = 'block';
+      bannerEl.style.background = style.bg;
+      bannerEl.style.borderColor = style.border;
+      bannerEl.style.color = style.color;
+      bannerEl.innerHTML = style.text;
+    }
+  } else if (bannerEl) {
+    bannerEl.style.display = 'none';
+  }
+  const discMidEl = document.getElementById('discMid');
+  if (phaseModifier.sizingNote) {
+    const baseDisc = `<span>${pctFrom(bestEntry, ath)}%</span> dari ATH · Fib Golden Zone`;
+    discMidEl.innerHTML = baseDisc + `<div style="margin-top:6px;padding:4px 0;border-top:1px solid var(--border);font-style:italic;color:${phaseKey === 'pump' || phaseKey === 'distribution' ? 'var(--accent-red)' : phaseKey === 'recovery' || phaseKey === 'momentum' ? 'var(--accent-green)' : 'var(--text-muted)'}">${phaseModifier.sizingNote}</div>`;
+  }
+
+  // Fib table
+  const fibRows = [
+    { name: 'Weak retracement', ratio: '0.382', price: fib382, note: '' },
+    { name: 'Mid level', ratio: '0.500', price: fib5, note: '' },
+    { name: '★ Golden zone', ratio: '0.618', price: fib618, note: 'best', color: '#7c5cbf' },
+    { name: '★ Golden zone', ratio: '0.650', price: fib65, note: 'best', color: '#5a8abf' },
+    { name: 'Deep support', ratio: '0.786', price: fib786, note: '' },
+  ];
+
+  if (hlFib618) {
+    fibRows.push({ name: 'HL → ATH Fib', ratio: '0.618', price: hlFib618, note: 'hl', color: '#5a9e7a' });
+    fibRows.push({ name: 'HL → ATH Fib', ratio: '0.650', price: hlFib65, note: 'hl', color: '#5a9e7a' });
+  }
+
+  const tbody = document.getElementById('fibBody');
+  tbody.innerHTML = fibRows.map(r => `
+    <tr>
+      <td>
+        <span class="fib-dot" style="background:${r.color || '#ccc'}"></span>
+        <span class="fib-label">${r.name}</span>
+      </td>
+      <td style="color:var(--text-muted); font-size:11px;">${r.ratio}</td>
+      <td class="fib-price">${toDisplay(r.price)}</td>
+      <td>${r.note === 'best' ? '<span class="fib-tag best">optimal entry</span>' : r.note === 'hl' ? '<span class="fib-tag">higher low fib</span>' : ''}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('resultsWrap').classList.add('visible');
+
+  // Draw chart
+  drawChart({ ath, low, hl, current, entryTop, entryBot, bestEntry, fib618, fib65, fib786, fib5, fib382, fib236, sl, hlFib618, hlFib65, supply });
+
+  // Akashi Score — pass phase for modifier
+  const scoreData = calcAkashiScore({ ath, low, hl, current, fib618, fib65, entryTop, entryBot, pair: tokenData, phaseKey });
+  const verdictData = getScoreVerdict(scoreData.total);
+  renderAkashiScore(scoreData, verdictData, tokenData);
+
+  // Why This Zone Matters — pass phase modifier
+  generateWhyThisZone({ ath, low, hl, current, fib618, fib65, entryTop, entryBot, bestEntry, sl, pair: tokenData, ohlcv: ohlcvData, scoreData, phaseKey, phaseModifier });
+
+  // Liquidity Health
+  renderLiquidityHealth(tokenData);
+
+  // What Invalidates This Setup
+  generateInvalidationConditions({ ath, low, hl, current, fib618, fib65, entryTop, entryBot, sl, pair: tokenData, phaseKey });
+}
+
+function drawChart(d) {
+  const canvas = document.getElementById('zoneCanvas');
+  const ctx = canvas.getContext('2d');
+
+  // HiDPI
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth;
+  const H = canvas.offsetHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.scale(dpr, dpr);
+
+  ctx.clearRect(0, 0, W, H);
+
+  const PAD_L = 110, PAD_R = 30, PAD_T = 30, PAD_B = 40;
+  const chartW = W - PAD_L - PAD_R;
+  const chartH = H - PAD_T - PAD_B;
+
+  // Price range with padding
+  const maxP = d.ath * 1.08;
+  const minP = d.sl * 0.85;
+  const totalRange = maxP - minP;
+
+  function py(price) {
+    return PAD_T + chartH * (1 - (price - minP) / totalRange);
+  }
+
+  // Background grid
+  ctx.strokeStyle = 'rgba(0,0,0,0.04)';
+  ctx.lineWidth = 0.5;
+  const gridCount = 8;
+  for (let i = 0; i <= gridCount; i++) {
+    const y = PAD_T + (chartH / gridCount) * i;
+    ctx.beginPath();
+    ctx.moveTo(PAD_L, y);
+    ctx.lineTo(W - PAD_R, y);
+    ctx.stroke();
+  }
+
+  // Y-axis labels
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.font = '10px DM Mono, monospace';
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= gridCount; i++) {
+    const price = minP + totalRange * (1 - i / gridCount);
+    const y = PAD_T + (chartH / gridCount) * i;
+    const label = d.supply ? formatLarge(price * d.supply) : formatPrice(price);
+    ctx.fillText(label, PAD_L - 8, y + 3.5);
+  }
+
+  // STOP LOSS ZONE
+  const slY = py(d.sl);
+  const slZoneBot = py(minP * 1.01);
+  ctx.fillStyle = 'rgba(220,80,80,0.07)';
+  ctx.fillRect(PAD_L, slY, chartW, slZoneBot - slY);
+  ctx.strokeStyle = 'rgba(200,60,60,0.5)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([6, 4]);
+  ctx.beginPath(); ctx.moveTo(PAD_L, slY); ctx.lineTo(W - PAD_R, slY); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // ENTRY BOX
+  const boxTop = py(d.entryTop);
+  const boxBot = py(d.entryBot);
+  const boxH = boxBot - boxTop;
+
+  // Box fill gradient
+  const grad = ctx.createLinearGradient(0, boxTop, 0, boxBot);
+  grad.addColorStop(0, 'rgba(200,180,240,0.22)');
+  grad.addColorStop(0.4, 'rgba(190,220,250,0.22)');
+  grad.addColorStop(1, 'rgba(180,230,200,0.22)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(PAD_L, boxTop, chartW, boxH);
+
+  // Box border
+  ctx.strokeStyle = 'rgba(120,100,180,0.5)';
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(PAD_L, boxTop, chartW, boxH);
+
+  // Entry zone layers inside box (dashed lines)
+  const entryLines = [
+    { price: d.entryTop, color: 'rgba(160,120,220,0.8)', label: 'Top –40%' },
+    { price: d.bestEntry, color: 'rgba(80,130,200,0.8)', label: '★ Optimal' },
+    { price: d.entryBot, color: 'rgba(60,160,100,0.8)', label: 'Bot –60%' },
+  ];
+  entryLines.forEach(el => {
+    const y = py(el.price);
+    ctx.strokeStyle = el.color;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 3]);
+    ctx.beginPath(); ctx.moveTo(PAD_L, y); ctx.lineTo(W - PAD_R, y); ctx.stroke();
+    ctx.setLineDash([]);
+    // label on right
+    ctx.fillStyle = el.color;
+    ctx.font = '10px DM Mono, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(el.label, W - PAD_R + 4, y + 3.5);
+  });
+
+  // FIB GOLDEN ZONE fill
+  const fibTop = py(d.fib618);
+  const fibBot = py(d.fib65);
+  ctx.fillStyle = 'rgba(230,200,80,0.15)';
+  ctx.fillRect(PAD_L, fibTop, chartW, fibBot - fibTop);
+  ctx.strokeStyle = 'rgba(200,160,40,0.6)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 3]);
+  ctx.beginPath(); ctx.moveTo(PAD_L, fibTop); ctx.lineTo(W - PAD_R, fibTop); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(PAD_L, fibBot); ctx.lineTo(W - PAD_R, fibBot); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // HL fib if exists
+  if (d.hlFib618) {
+    const hlFibTopY = py(d.hlFib618);
+    const hlFibBotY = py(d.hlFib65);
+    ctx.fillStyle = 'rgba(80,160,120,0.12)';
+    ctx.fillRect(PAD_L, hlFibTopY, chartW, hlFibBotY - hlFibTopY);
+    ctx.strokeStyle = 'rgba(60,140,100,0.5)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath(); ctx.moveTo(PAD_L, hlFibTopY); ctx.lineTo(W - PAD_R, hlFibTopY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(PAD_L, hlFibBotY); ctx.lineTo(W - PAD_R, hlFibBotY); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // ATH line
+  const athY = py(d.ath);
+  ctx.strokeStyle = 'rgba(180,60,60,0.7)';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(PAD_L, athY); ctx.lineTo(W - PAD_R, athY); ctx.stroke();
+  ctx.fillStyle = 'rgba(180,60,60,0.85)';
+  ctx.font = '10px DM Mono, monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('ATH', PAD_L + 6, athY - 5);
+
+  // LOW line
+  const lowY = py(d.low);
+  ctx.strokeStyle = 'rgba(60,120,180,0.6)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath(); ctx.moveTo(PAD_L, lowY); ctx.lineTo(W - PAD_R, lowY); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(60,120,180,0.8)';
+  ctx.font = '10px DM Mono, monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('Low', PAD_L + 6, lowY - 5);
+
+  // HL line if exists
+  if (d.hl) {
+    const hlY = py(d.hl);
+    ctx.strokeStyle = 'rgba(60,160,100,0.6)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(PAD_L, hlY); ctx.lineTo(W - PAD_R, hlY); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(60,160,100,0.8)';
+    ctx.font = '10px DM Mono, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('HL', PAD_L + 6, hlY - 5);
+  }
+
+  // Current price dot
+  if (d.current) {
+    const cpY = py(d.current);
+    ctx.fillStyle = '#7c5cbf';
+    ctx.beginPath();
+    ctx.arc(PAD_L + chartW * 0.75, cpY, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#7c5cbf';
+    ctx.font = '500 11px DM Mono, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('● Current ' + (d.supply ? formatLarge(d.current * d.supply) : formatPrice(d.current)), PAD_L + chartW * 0.75 + 10, cpY + 4);
+  }
+
+  // SL label
+  ctx.fillStyle = 'rgba(180,60,60,0.7)';
+  ctx.font = '10px DM Mono, monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('SL –85%', PAD_L + 6, slY - 5);
+
+  // Left axis border
+  ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+  ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(PAD_L, PAD_T);
+  ctx.lineTo(PAD_L, PAD_T + chartH);
+  ctx.stroke();
+}
+
+// ─── AKASHI SCORE ────────────────────────────────────────────────────────────
+function calcAkashiScore({ ath, low, hl, current, fib618, fib65, entryTop, entryBot, pair, phaseKey }) {
+  let total = 0;
+  const breakdown = [];
+
+  // 1. Retracement Quality (25pts) — is current in golden zone?
+  let retScore = 0;
+  if (current) {
+    const inGolden = current >= fib65 && current <= fib618;
+    const nearGolden = current >= fib65 * 0.92 && current <= fib618 * 1.08;
+    const inEntryBox = current >= entryBot && current <= entryTop;
+    if (inGolden) retScore = 25;
+    else if (nearGolden) retScore = 18;
+    else if (inEntryBox) retScore = 12;
+    else if (current > ath) retScore = 4;
+    else retScore = 8;
+  } else { retScore = 10; }
+  breakdown.push({ label: 'Retracement', score: retScore, max: 25, color: '#a080d0' });
+  total += retScore;
+
+  // 2. Liquidity Health (25pts) — from DexScreener pair data
+  let liqScore = 0;
+  if (pair) {
+    const liq = pair.liquidity?.usd || 0;
+    const mcap = pair.fdv || pair.marketCap || 0;
+    if (liq && mcap) {
+      const ratio = liq / mcap;
+      if (ratio > 0.15) liqScore = 25;
+      else if (ratio > 0.10) liqScore = 20;
+      else if (ratio > 0.06) liqScore = 14;
+      else if (ratio > 0.03) liqScore = 8;
+      else liqScore = 3;
+    } else if (liq > 500000) liqScore = 18;
+    else if (liq > 100000) liqScore = 12;
+    else liqScore = 6;
+  } else { liqScore = 12; } // no data, neutral
+  breakdown.push({ label: 'Liquidity', score: liqScore, max: 25, color: '#5a9e7a' });
+  total += liqScore;
+
+  // 3. Structure (20pts) — does HL exist and hold above low?
+  let structScore = 0;
+  if (hl && hl > low && hl < ath) {
+    const hlRatio = (hl - low) / (ath - low);
+    if (hlRatio > 0.35) structScore = 20;
+    else if (hlRatio > 0.2) structScore = 14;
+    else structScore = 8;
+  } else { structScore = 5; }
+  breakdown.push({ label: 'Structure (HL)', score: structScore, max: 20, color: '#5a8abf' });
+  total += structScore;
+
+  // 4. Volume Momentum (15pts) — from pair 24h volume vs mcap
+  let volScore = 0;
+  if (pair) {
+    const vol = pair.volume?.h24 || 0;
+    const mcap = pair.fdv || pair.marketCap || 0;
+    const change24 = pair.priceChange?.h24 || 0;
+    if (vol && mcap) {
+      const vtm = vol / mcap;
+      if (vtm > 0.4) volScore = 15;
+      else if (vtm > 0.15) volScore = 11;
+      else if (vtm > 0.05) volScore = 7;
+      else volScore = 3;
+    } else volScore = 7;
+    // penalize if massive vertical pump
+    if (change24 > 200) volScore = Math.max(volScore - 5, 0);
+  } else { volScore = 7; }
+  breakdown.push({ label: 'Vol Momentum', score: volScore, max: 15, color: '#e0a050' });
+  total += volScore;
+
+  // 5. Risk / Volatility (15pts) — how far current is from SL
+  let riskScore = 0;
+  const sl = ath * 0.15;
+  if (current) {
+    const distFromSL = (current - sl) / current;
+    if (distFromSL > 0.6) riskScore = 15;
+    else if (distFromSL > 0.35) riskScore = 10;
+    else if (distFromSL > 0.1) riskScore = 5;
+    else riskScore = 0;
+  } else riskScore = 8;
+  breakdown.push({ label: 'Risk Buffer', score: riskScore, max: 15, color: '#c0504d' });
+  total += riskScore;
+
+  // ── Phase modifier (v24) ── adjust total score based on market phase
+  let phaseAdjust = 0;
+  let phaseNote = null;
+  switch (phaseKey) {
+    case 'pump':        phaseAdjust = -20; phaseNote = 'Phase penalty: Vertical pump aktif (-20)'; break;
+    case 'distribution': phaseAdjust = -12; phaseNote = 'Phase penalty: Distribution phase (-12)'; break;
+    case 'capitulation': phaseAdjust = -6;  phaseNote = 'Phase penalty: Capitulation timing (-6)'; break;
+    case 'momentum':    phaseAdjust = +8;  phaseNote = 'Phase bonus: Momentum expansion (+8)'; break;
+    case 'recovery':    phaseAdjust = +5;  phaseNote = 'Phase bonus: Recovery attempt (+5)'; break;
+    default: phaseAdjust = 0;
+  }
+  if (phaseAdjust !== 0 && phaseNote) {
+    breakdown.push({ label: 'Phase Context', score: Math.max(0, 10 + phaseAdjust), max: 10, color: phaseAdjust > 0 ? '#5a9e7a' : '#c0504d', note: phaseNote });
+    total += phaseAdjust;
+  }
+
+  return { total: Math.min(Math.max(total, 0), 100), breakdown };
+}
+
+function getScoreVerdict(score) {
+  if (score >= 80) return { verdict: 'Prime Setup', desc: 'Struktur kuat, liquidity sehat, harga dekat optimal reload zone. Probabilitas tinggi.', color: '#1d7a50', glow: '#2ecc71' };
+  if (score >= 65) return { verdict: 'Healthy Reload', desc: 'Setup solid. Minor caveat tapi overall kondisi favorable buat akumulasi.', color: '#5a8abf', glow: '#5ab4ff' };
+  if (score >= 50) return { verdict: 'Watchlist Zone', desc: 'Ada potensi, tapi perlu konfirmasi lebih. Jangan full position dulu.', color: '#9a6c10', glow: '#f0c040' };
+  if (score >= 35) return { verdict: 'Weak Structure', desc: 'Multiple red flags. Entry sekarang high-risk. Tunggu setup yang lebih clear.', color: '#c07820', glow: '#e08040' };
+  return { verdict: 'Exit Liquidity Risk', desc: 'Setup berbahaya. Liquidity tipis, struktur broken, atau harga terlalu extended. Avoid.', color: '#a03030', glow: '#e05050' };
+}
+
+function generateSynthesis(scoreData, pair) {
+  const bd = {};
+  scoreData.breakdown.forEach(b => { bd[b.label] = { score: b.score, max: b.max, pct: b.score / b.max }; });
+
+  const lines = [];
+
+  // Retracement reading
+  if (bd['Retracement']) {
+    const r = bd['Retracement'].pct;
+    if (r >= 1.0) lines.push('Harga tepat di golden zone — zona ini historically confluence terkuat untuk reload.');
+    else if (r >= 0.72) lines.push('Harga mendekati golden zone, tapi belum presisi. Masih dalam range yang acceptable.');
+    else if (r >= 0.48) lines.push('Harga dalam entry box tapi belum menyentuh optimal level. Bisa scale-in pelan-pelan.');
+    else lines.push('Harga belum di zona yang ideal — terlalu extended atau terlalu jauh dari golden zone.');
+  }
+
+  // Liquidity reading
+  if (bd['Liquidity']) {
+    const l = bd['Liquidity'].pct;
+    if (l >= 0.8) lines.push('Liquidity depth sangat sehat — support untuk size lebih besar ada.');
+    else if (l >= 0.56) lines.push('Liquidity cukup, tapi perhatikan slippage kalau size kamu besar.');
+    else if (l >= 0.32) lines.push('Liquidity tipis — pool kecil, potensi slippage tinggi, dan lebih mudah dimanipulasi.');
+    else lines.push('Liquidity sangat tipis. Exit liquidity risk nyata — jangan masuk dengan size besar.');
+  }
+
+  // Structure + Volume combo
+  const hasStruct = bd['Structure (HL)'] && bd['Structure (HL)'].pct >= 0.7;
+  const hasVol = bd['Vol Momentum'] && bd['Vol Momentum'].pct >= 0.7;
+  const lowVol = bd['Vol Momentum'] && bd['Vol Momentum'].pct < 0.35;
+
+  if (hasStruct && hasVol) lines.push('Higher low terbentuk dan volume masih aktif — struktur market bullish.');
+  else if (hasStruct && !hasVol) lines.push('Struktur HL terbentuk, tapi volume belum confirm. Momentum belum ready untuk breakout.');
+  else if (!hasStruct && hasVol) lines.push('Volume ada, tapi struktur belum clear — bisa jadi distribution, bukan accumulation.');
+  else if (lowVol) lines.push('Volume sangat rendah — momentum lemah, hati-hati fakeout atau slow bleed.');
+
+  // Risk buffer
+  if (bd['Risk Buffer']) {
+    const rb = bd['Risk Buffer'].pct;
+    if (rb < 0.35) lines.push('Jarak ke stop loss terlalu dekat — risk/reward kurang favorable dari level ini.');
+    else if (rb >= 1.0) lines.push('Risk buffer bagus — ada ruang gerak cukup sebelum invalidasi setup.');
+  }
+
+  // Pair-specific context
+  if (pair) {
+    const change24 = pair.priceChange?.h24;
+    const buys = pair.txns?.h24?.buys || 0;
+    const sells = pair.txns?.h24?.sells || 0;
+    const totalTxns = buys + sells;
+    const buyRatio = totalTxns ? buys / totalTxns : null;
+
+    if (change24 !== undefined) {
+      if (change24 > 150) lines.push('⚠️ Pump 24h sangat ekstrem — kemungkinan besar ini top, bukan entry.');
+      else if (change24 < -60) lines.push('Koreksi dalam 24h — bisa jadi capitulation, tapi konfirmasi dulu sebelum masuk.');
+    }
+    if (buyRatio !== null && totalTxns > 10) {
+      if (buyRatio > 0.70) lines.push('Buy pressure dominan (' + Math.round(buyRatio*100) + '% buyers) — ada minat akumulasi.');
+      else if (buyRatio < 0.35) lines.push('Sell pressure dominan (' + Math.round((1-buyRatio)*100) + '% sellers) — distribusi masih berlangsung.');
+    }
+  }
+
+  return lines;
+}
+
+function renderAkashiScore(scoreData, verdictData, pair) {
+  const panel = document.getElementById('scorePanel');
+  panel.classList.add('visible');
+
+  // Score number
+  document.getElementById('scoreNumber').textContent = scoreData.total;
+  document.getElementById('scoreNumber').style.color = verdictData.color;
+
+  // Verdict
+  document.getElementById('scoreVerdict').textContent = scoreData.total + ' — ' + verdictData.verdict;
+  document.getElementById('scoreVerdict').style.color = verdictData.color;
+  document.getElementById('scoreDesc').textContent = verdictData.desc;
+
+  // Synthesis
+  const synthLines = generateSynthesis(scoreData, pair);
+  const synthEl = document.getElementById('scoreSynthesis');
+  if (synthEl && synthLines.length > 0) {
+    synthEl.innerHTML = synthLines.map(l => `<div class="synth-line">${l}</div>`).join('');
+    synthEl.style.display = 'block';
+  }
+
+  // Glow
+  const glow = document.getElementById('scoreGlow');
+  glow.style.background = verdictData.glow;
+
+  // Breakdown bars
+  const barsEl = document.getElementById('scoreBars');
+  barsEl.innerHTML = scoreData.breakdown.map(b => {
+    const pct = Math.round((b.score / b.max) * 100);
+    const noteHtml = b.note ? `<div style="grid-column:1/-1;font-size:9px;color:var(--text-faint);font-style:italic;margin-top:2px;padding-left:120px;">${b.note}</div>` : '';
+    return `
+      <div class="score-bar-row">
+        <div class="score-bar-label">${b.label}</div>
+        <div class="score-bar-track">
+          <div class="score-bar-fill" style="width:${Math.max(0,Math.min(pct,100))}%;background:${b.color};"></div>
+        </div>
+        <div class="score-bar-val">${b.score}/${b.max}</div>
+      </div>${noteHtml}`;
+  }).join('');
+
+  // Arc canvas
+  drawScoreArc(scoreData.total, verdictData.color);
+}
+
+function drawScoreArc(score, color) {
+  const canvas = document.getElementById('scoreArc');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = 110 * dpr; canvas.height = 110 * dpr;
+  ctx.scale(dpr, dpr);
+  const cx = 55, cy = 55, r = 44;
+  const startAngle = Math.PI * 0.75;
+  const fullAngle = Math.PI * 1.5;
+  const endAngle = startAngle + fullAngle * (score / 100);
+
+  // Track
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, startAngle, startAngle + fullAngle);
+  ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+  ctx.lineWidth = 8;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  // Fill
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, startAngle, endAngle);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 8;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+}
+
+// ─── WHAT INVALIDATES THIS SETUP — v24 ───────────────────────────────────────
+function generateInvalidationConditions({ ath, low, hl, current, fib618, fib65, entryTop, entryBot, sl, pair, phaseKey }) {
+  const panel = document.getElementById('invPanel');
+  const grid  = document.getElementById('invGrid');
+  const thesis = document.getElementById('invThesis');
+
+  panel.classList.add('visible');
+
+  // Helper: show as mcap if supply available, else price
+  const supply = parseFloat(document.getElementById('supplyInput').value) || null;
+  function toMcap(price) {
+    if (!price) return '—';
+    return supply ? formatLarge(price * supply) : formatPrice(price);
+  }
+
+  const conditions = [];
+
+  // 1. Higher Low Break — structural invalidation
+  if (hl && hl > low) {
+    conditions.push({
+      priority: 'critical',
+      label: 'Structure Break',
+      trigger: `HL broken di bawah ${toMcap(hl)} mcap`,
+      desc: 'Higher low adalah satu-satunya bukti buyer bertahan. Kalau level ini ditembus ke bawah dengan volume, thesis bullish gugur sepenuhnya.'
+    });
+  } else {
+    conditions.push({
+      priority: 'critical',
+      label: 'New Lower Low',
+      trigger: `Candle close di bawah ${toMcap(low)} mcap`,
+      desc: 'Belum ada HL terbentuk — kalau harga bikin lower low baru, struktur makin broken dan entry jadi prematur.'
+    });
+  }
+
+  // 2. Stop loss absolute
+  conditions.push({
+    priority: 'critical',
+    label: 'Hard Stop Loss',
+    trigger: `MCap turun ke bawah ${toMcap(sl)}`,
+    desc: '–85% dari ATH adalah batas absolut. Di bawah ini risk/reward sudah tidak viable — exit tanpa negosiasi.'
+  });
+
+  // 3. Sell pressure spike — from live data or logic
+  if (pair) {
+    const buys  = pair.txns?.h24?.buys  || 0;
+    const sells = pair.txns?.h24?.sells || 0;
+    const total = buys + sells;
+    const buyRatio = total > 0 ? buys / total : null;
+    const currentRatio = buyRatio !== null ? Math.round(buyRatio * 100) : null;
+
+    conditions.push({
+      priority: 'major',
+      label: 'Sell Pressure Dominasi',
+      trigger: currentRatio !== null
+        ? `Sell ratio naik ke > 65% (sekarang ${100 - currentRatio}% sellers)`
+        : 'Sell ratio melampaui 65% dari total txns',
+      desc: 'Kalau seller konsisten mendominasi > 65% dalam window h1 dan h6, distribusi aktif — bukan healthy dip.'
+    });
+  } else {
+    conditions.push({
+      priority: 'major',
+      label: 'Sell Pressure Dominasi',
+      trigger: 'Sell ratio melampaui 65% dari total txns',
+      desc: 'Seller dominan konsisten dalam h1 dan h6 = distribusi aktif, bukan healthy pullback.'
+    });
+  }
+
+  // 4. Liquidity drain
+  if (pair) {
+    const liq  = pair.liquidity?.usd || 0;
+    const mcap = pair.fdv || pair.marketCap || 0;
+    const liqRatio = mcap > 0 ? liq / mcap : 0;
+    const liqThreshold = liq > 0 ? formatLarge(liq * 0.6) : null;
+
+    conditions.push({
+      priority: liqRatio < 0.05 ? 'critical' : 'major',
+      label: 'Liquidity Drain',
+      trigger: liqThreshold
+        ? `Pool liquidity turun di bawah ${liqThreshold}`
+        : 'Pool liquidity turun > 40% dari level sekarang',
+      desc: 'Liquidity yang menyusut cepat = smart money keluar. Setup jadi manipulation-prone dan slippage naik drastis.'
+    });
+  }
+
+  // 5. Entry zone invalidation — price breaks above or below box
+  if (current) {
+    if (current < entryBot) {
+      // Already below — monitor for further flush
+      conditions.push({
+        priority: 'major',
+        label: 'Deep Flush Lanjutan',
+        trigger: `Candle close di bawah ${toMcap(entryBot * 0.85)} mcap`,
+        desc: 'Sudah di bawah entry box. Flush lebih dalam dari –15% lagi dari batas bawah mengindikasikan capitulation belum selesai.'
+      });
+    } else {
+      // Above box — if it was a "wait for zone" scenario
+      conditions.push({
+        priority: 'minor',
+        label: 'Zone Miss',
+        trigger: `Bounce kuat tanpa menyentuh zona (MCap > ${toMcap(entryTop)})`,
+        desc: 'Kalau harga recovery langsung tanpa masuk entry box, setup ini miss — jangan chase, tunggu setup berikutnya.'
+      });
+    }
+  }
+
+  // 6. Phase-specific invalidation
+  if (phaseKey === 'recovery' || phaseKey === 'chop') {
+    conditions.push({
+      priority: 'major',
+      label: 'Recovery Gagal',
+      trigger: 'h1 dan h6 kembali negatif setelah bounce awal',
+      desc: 'Recovery attempt yang gagal membentuk higher high = weak bounce. Ini sering jadi dead cat sebelum leg down berikutnya.'
+    });
+  }
+  if (phaseKey === 'capitulation') {
+    conditions.push({
+      priority: 'major',
+      label: 'Volume Spike Berlanjut',
+      trigger: 'Volume h1 kembali melonjak setelah sempat meredam',
+      desc: 'Capitulation selesai ditandai oleh volume exhaustion. Kalau volume spike lagi setelah meredam, artinya flushing belum done.'
+    });
+  }
+
+  // ── Sort: critical first, then major, then minor ──
+  const order = { critical: 0, major: 1, minor: 2 };
+  conditions.sort((a, b) => order[a.priority] - order[b.priority]);
+
+  // ── Render grid ──
+  grid.innerHTML = conditions.map(c => `
+    <div class="inv-condition">
+      <div class="inv-cond-label">
+        <span class="inv-priority-dot ${c.priority}"></span>${c.label}
+      </div>
+      <div class="inv-cond-trigger ${c.priority === 'critical' ? 'danger' : ''}">${c.trigger}</div>
+      <div class="inv-cond-desc">${c.desc}</div>
+    </div>
+  `).join('');
+
+  // ── Thesis summary ──
+  const criticalCount = conditions.filter(c => c.priority === 'critical').length;
+  const hasLivePair = !!pair;
+
+  let thesisText = '';
+  if (phaseKey === 'pump' || phaseKey === 'distribution') {
+    thesisText = `<strong>Setup ini sudah dalam kondisi elevated risk.</strong> Monitor kondisi di atas dengan ketat — beberapa invalidation trigger mungkin sudah dekat. Prioritaskan mengamati sell ratio dan liquidity sebelum eksekusi apapun.`;
+  } else if (criticalCount >= 2) {
+    thesisText = `Ada <strong>${criticalCount} kondisi critical</strong> yang perlu dimonitor. Thesis ini valid selama higher low intact dan stop loss belum tersentuh. Kalau salah satu dari dua itu breach, keluar — tidak perlu tunggu konfirmasi lebih lanjut.`;
+  } else {
+    thesisText = `Thesis ini dianggap <strong>valid selama tidak ada satu pun kondisi critical di atas terpenuhi</strong>. Secondary conditions bisa jadi early warning — tapi bukan alasan untuk exit sendiri. Kombinasi dari dua atau lebih secondary signals yang trigger dalam waktu bersamaan layak dijadikan alasan untuk reduce size.`;
+  }
+  if (!hasLivePair) {
+    thesisText += ` <em style="color:var(--text-faint);">Beberapa kondisi di atas menggunakan estimasi karena tidak ada data live. Fetch CA untuk threshold yang lebih presisi.</em>`;
+  }
+  thesis.innerHTML = thesisText;
+}
+
+// ─── LIQUIDITY HEALTH ─────────────────────────────────────────────────────────
+function renderLiquidityHealth(pair) {
+  const panel = document.getElementById('liqPanel');
+
+  if (!pair) {
+    // No live data — show placeholder message
+    panel.classList.add('visible');
+    document.getElementById('liqBadge').textContent = 'No Live Data';
+    document.getElementById('liqBadge').className = 'liq-status-badge decent';
+    document.getElementById('liqGrid').innerHTML = `<div style="grid-column:1/-1;font-size:11px;color:var(--text-muted);padding:8px 0;">Fetch token via CA untuk lihat Liquidity Health secara real-time.</div>`;
+    document.getElementById('liqNote').innerHTML = `Gunakan fitur <span class="highlight">Fetch Data</span> dengan Contract Address (CA) untuk analisis liquidity otomatis.`;
+    return;
+  }
+
+  panel.classList.add('visible');
+
+  const liq = pair.liquidity?.usd || 0;
+  const mcap = pair.fdv || pair.marketCap || 0;
+  const liqRatio = mcap ? (liq / mcap) : null;
+  const vol24 = pair.volume?.h24 || 0;
+  const buys = pair.txns?.h24?.buys || 0;
+  const sells = pair.txns?.h24?.sells || 0;
+  const totalTxns = buys + sells;
+  const buyRatio = totalTxns ? buys / totalTxns : null;
+
+  // Pool age from pairCreatedAt
+  let poolAge = '—';
+  if (pair.pairCreatedAt) {
+    const days = Math.floor((Date.now() - pair.pairCreatedAt) / 86400000);
+    poolAge = days < 1 ? '<1d' : days + 'd';
+  }
+
+  // Status
+  let status = 'decent', statusText = 'Moderate';
+  if (liqRatio !== null) {
+    if (liqRatio > 0.12) { status = 'healthy'; statusText = 'HEALTHY'; }
+    else if (liqRatio < 0.04) { status = 'danger'; statusText = 'DANGEROUS'; }
+    else { status = 'decent'; statusText = 'MODERATE'; }
+  }
+  const badge = document.getElementById('liqBadge');
+  badge.textContent = statusText;
+  badge.className = 'liq-status-badge ' + status;
+
+  // Color helpers
+  function liqRatioColor(r) {
+    if (!r) return '';
+    if (r > 0.12) return 'green';
+    if (r > 0.05) return 'yellow';
+    return 'red';
+  }
+  function volColor(v, mc) {
+    if (!v || !mc) return '';
+    const vtm = v / mc;
+    if (vtm > 0.15) return 'green';
+    if (vtm > 0.05) return 'yellow';
+    return 'red';
+  }
+
+  // Grid metrics
+  const metrics = [
+    {
+      label: 'Liquidity',
+      val: formatLarge(liq) || '—',
+      sub: 'Total pool liquidity',
+      color: liq > 500000 ? 'green' : liq > 100000 ? 'yellow' : 'red'
+    },
+    {
+      label: 'Liq / MCap',
+      val: liqRatio !== null ? (liqRatio * 100).toFixed(1) + '%' : '—',
+      sub: liqRatio > 0.12 ? 'Very healthy ratio' : liqRatio > 0.05 ? 'Decent ratio' : liqRatio !== null ? 'Low — be careful' : 'N/A',
+      color: liqRatioColor(liqRatio)
+    },
+    {
+      label: 'Pool Age',
+      val: poolAge,
+      sub: poolAge === '—' ? 'N/A' : parseInt(poolAge) < 3 ? 'Very new — higher risk' : parseInt(poolAge) > 30 ? 'Mature pool' : 'Establishing',
+      color: ''
+    },
+    {
+      label: '24h Volume',
+      val: formatLarge(vol24) || '—',
+      sub: vol24 && mcap ? 'VtM: ' + ((vol24/mcap)*100).toFixed(1) + '%' : '',
+      color: volColor(vol24, mcap)
+    },
+    {
+      label: 'Transactions',
+      val: totalTxns ? totalTxns.toLocaleString() : '—',
+      sub: totalTxns ? `${buys} buys · ${sells} sells` : 'N/A',
+      color: ''
+    },
+    {
+      label: 'Market Cap',
+      val: formatLarge(mcap) || '—',
+      sub: 'Fully diluted valuation',
+      color: ''
+    },
+  ];
+
+  document.getElementById('liqGrid').innerHTML = metrics.map(m => `
+    <div class="liq-metric">
+      <div class="liq-metric-label">${m.label}</div>
+      <div class="liq-metric-val ${m.color}">${m.val}</div>
+      <div class="liq-metric-sub">${m.sub}</div>
+    </div>
+  `).join('');
+
+  // Buy/Sell pressure bar
+  if (buyRatio !== null && totalTxns > 0) {
+    const pressureBar = document.getElementById('liqPressureBar');
+    pressureBar.style.display = 'block';
+    const pct = Math.round(buyRatio * 100);
+    document.getElementById('liqPressurePct').textContent = `${pct}% Buyers`;
+    document.getElementById('liqPressureFill').style.width = pct + '%';
+  }
+
+  // Note
+  let noteHtml = '';
+  if (liqRatio !== null) {
+    if (liqRatio < 0.04) {
+      noteHtml = `⚠️ <span class="highlight">Liquidity sangat tipis</span> — exit liquidity risk tinggi. Slip bisa besar kalau kamu bukan yang pertama keluar.`;
+    } else if (liqRatio > 0.15) {
+      noteHtml = `✓ <span class="highlight">Liquidity depth bagus</span> — pool sehat, relatif aman dari manipulation. Setup favorable.`;
+    } else {
+      noteHtml = `Liquidity ratio dalam rentang <span class="highlight">moderate</span>. Masih oke, tapi pantau pergerakan pool sebelum full position.`;
+    }
+  }
+  if (poolAge !== '—' && parseInt(poolAge) < 3) {
+    noteHtml += ` Pool masih sangat baru (<span class="highlight">${poolAge}</span>) — volatilitas tinggi, lebih explosive tapi lebih risky.`;
+  }
+  document.getElementById('liqNote').innerHTML = noteHtml || 'Data liquidity tersedia. Monitor secara berkala.';
+}
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function formatPrice(p) {
+  if (!p || isNaN(p)) return '—';
+  if (p < 0.000001) return '$' + p.toExponential(4);
+  if (p < 0.001) return '$' + p.toFixed(8).replace(/0+$/, '');
+  if (p < 1) return '$' + p.toFixed(6).replace(/0+$/, '');
+  if (p < 1000) return '$' + p.toFixed(4);
+  return '$' + p.toLocaleString('en-US', { maximumFractionDigits: 2 });
+}
+
+function formatLarge(n) {
+  if (!n) return '—';
+  if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return '$' + (n / 1e3).toFixed(1) + 'K';
+  return '$' + n.toFixed(2);
+}
+
+function pctFrom(price, ref) {
+  const pct = ((price - ref) / ref) * 100;
+  return pct.toFixed(1);
+}
+
+function setStatus(msg, type) {
+  const el = document.getElementById('statusMsg');
+  el.textContent = msg;
+  el.className = 'status-msg' + (type ? ' ' + type : '');
+}
+
+// Redraw on resize
+window.addEventListener('resize', () => {
+  const wrap = document.getElementById('resultsWrap');
+  if (wrap.classList.contains('visible')) {
+    // just redraw with last drawn data if we store it
+  }
+});
+</script>
+</body>
+</html>
